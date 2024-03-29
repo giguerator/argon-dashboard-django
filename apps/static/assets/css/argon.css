@@ -1182,6 +1182,32 @@ pre {
   .offset-xl-11 {
     margin-left: 91.66667%; } }
 
+.accordion-1 .accordion {
+    margin-top: 80px;
+    margin-bottom: 80px;}
+
+.accordion-1 .accordion .card {
+    margin-top: 0;
+    margin-bottom: 0;
+    box-shadow: none;
+    border-bottom: 1px solid #f4f5f7!important;}
+
+.accordion-1 .accordion .card .card-header {
+    border-bottom: none;}
+
+.accordion-1 .accordion .card .card-header .btn[aria-expanded=true] .ni {
+    transform: rotate(180deg);}
+
+
+.accordion-1 .accordion .card .card-header .btn:active:focus {
+    box-shadow: none;}
+
+.accordion-1 .accordion .card:last-child {
+    border-bottom: none!important;}
+
+.accordion-1 .accordion .card .card-body {
+    padding: 10px 30px 30px;}
+    
 .table {
   width: 100%;
   margin-bottom: 1rem;
@@ -11234,30 +11260,28 @@ a.btn-icon-only {
     .close:hover span:not(.sr-only), .close:focus span:not(.sr-only) {
       background-color: transparent; }
 
-.accordion .card-header {
-  position: relative;
-  cursor: pointer; }
-  .accordion .card-header:after {
-    content: "\ea0f";
-    position: absolute;
-    right: 1.5rem;
-    top: 50%;
-    transform: translateY(-50%);
-    font: normal normal normal 14px/1 NucleoIcons;
-    line-height: 0;
-    transition: all 0.15s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
-    @media (prefers-reduced-motion: reduce) {
-      .accordion .card-header:after {
-        transition: none; } }
-
-.accordion .card-header[aria-expanded="false"]:after {
-  content: "\ea0f"; }
-
-.accordion .card-header[aria-expanded="true"]:after {
-  transform: rotate(180deg); }
-
-.accordion .card-header[aria-expanded="true"] .heading {
-  color: #5e72e4; }
+.accordion>.card {
+    overflow: hidden;
+}
+.accordion>.card:not(:first-of-type) .card-header:first-child {
+    border-radius: 0;
+}
+.accordion>.card:not(:first-of-type):not(:last-of-type) {
+    border-bottom: 0;
+    border-radius: 0;
+}
+.accordion>.card:first-of-type {
+    border-bottom: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.accordion>.card:last-of-type {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+.accordion>.card .card-header {
+    margin-bottom: -.0625rem;
+}
 
 .main-content {
   position: relative; }

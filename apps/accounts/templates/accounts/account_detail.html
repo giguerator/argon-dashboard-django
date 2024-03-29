@@ -1,0 +1,125 @@
+{% extends 'custom_layouts/base-navigationheader.html' %}
+  {% block content_display %}
+  {% load static %}
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <div class="card-header border-bottom">
+            <div class="mb-0">
+              <h3 class="mb-0">Account Details</h3>
+              <div class="mt--4 text-right">
+                <a href="{% url 'account.update' pk=account.id %}" class="btn btn-sm btn-secondary">Edit</a>
+                <a href="{% url 'account.delete' pk=account.id %}" class="btn btn-sm btn-danger">Delete</a>
+              </div>
+            </div>
+          </div>
+          <div class="card-body border-0">
+            <div class="row">
+              <div class="col border-left">
+                <label>Account Number:</label><p>{{account.number}}</p>
+                <label>Institution:</label><p>{{account.parent_institution.get_name_display}}</p>
+                <label>Description:</label><p>{{account.description}}</p>
+              </div>
+              <div class="col border-left">
+                <label>Type:</label><p>{{account.get_type_display}}</p>
+                <label>Current Balance:</label><p>{{account.balance}}</p>
+                <label>Last Updated:</label><p>{{account.last_updated}}</p>
+              </div>
+            </div>
+          </div>
+          <div class="row mx-1">
+            <div class="col">
+              <div class="card bg-default">
+                <div class="card-header bg-transparent">
+                  <div class="col">
+                    <h4 class="text-light ls-1">Value Over Time Chart</h4>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="chart chart-sm">
+                    <!-- Chart wrapper -->
+                    <canvas id="chart-accounts" class="chart-canvas"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> 
+          <div class="row mx-1">
+            <div class="col">
+              <div class="card bg-light">
+                <div class="card-header bg-transparent border-bottom">
+                  <h4 class="text-default ls-1">Value Over Time Table</h4>
+                </div>
+                <div class="card-body mx-0">
+                  <table class="table align-items-center">
+                    <thead class="thead-light">
+                      <tr>
+                        <th scope="col" class="sort" data-sort="timestamp">Date</th>
+                        <th scope="col" class="sort" data-sort="balance">Account Balance</th>
+                        <th scope="col" class="sort" data-sort="updated">Updated Date</th>
+                      </tr>
+                    </thead>
+                    <tbody class="list">
+                      {% for account_value in account_values %}
+                      <tr>
+
+                        <th scope="row">
+                          <span>{{account_value.value_date}}</span>
+                        </th>
+                        <td class="budget">
+                          <span>{{account_value.value}}$</span>
+                        </td>
+                        <td>
+                          <span>{{account_value.last_updated}}</span>
+                        </td>
+                      
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                  <div class="card-footer bg-transparent">
+                    <nav aria-label="...">
+                      <ul class="pagination justify-content-center">
+                        {% if account_values.has_previous %}
+                        <li class="page-item">
+                          <a class="page-link" href="?page=1">
+                            <i class="fa fa-angle-double-left"></i>
+                            <span class="sr-only">First</span>
+                          </a>
+                        </li>
+                        <li class="page-item"><a class="page-link" href="?page={{ account_values.previous_page_number }}">{{ account_values.previous_page_number }}</a></li>
+                        {% endif %}
+                        <li class="page-item active">
+                          <a class="page-link" href="#">{{ account_values.number }}<span class="sr-only">(current)</span></a>
+                        </li>
+                        {% if account_values.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ account_values.next_page_number }}">{{ account_values.next_page_number }}</a></li>
+                        <li class="page-item">
+                          <a class="page-link" href="?page={{ account_values.paginator.num_pages }}">
+                            <i class="fa fa-angle-double-right"></i>
+                            <span class="sr-only">Next</span>
+                          </a>
+                        </li>
+                        {% endif %}
+                      </ul>
+                    </nav>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  {% endblock content_display %}
+
+  <!-- Specific JS goes HERE --> 
+{% block javascripts %}
+<script type="application/javascript" src="{% static 'accounts_assets/chart_management.js' %}"></script>
+
+<script type="application/javascript">
+  //Test();
+  AccountChart({{ account_report|safe }}, {{ account_report_labels|safe }});
+</script>
+{% endblock javascripts %}

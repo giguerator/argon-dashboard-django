@@ -1,0 +1,25 @@
+{% extends 'custom_layouts/base-navigationheader.html' %}
+  {% block content_display %}
+    <!-- Table -->
+    <div class="row justify-content-center">
+      <div class="col-lg-8 col-md-8">
+        <div class="card bg-secondary border-0">
+          <div class="card-body px-lg-5 py-lg-5">
+            <div class="text-center text-muted mb-4">
+              <h2>Manually Added Asset Details</h2>
+            </div>
+          <div>
+            <label>Description:</label><p>{{manual_asset.description}}</p>
+            <label>Category:</label><p>{{manual_asset.get_category_display}}</p>
+            <label>Current Value:</label><p>{{manual_asset.current_value}}$</p>
+            <label>Last Updated:</label><p>{{manual_asset.last_updated}}</p>
+          </div>
+          <div class="col text-center">
+            <a href="{% url 'manual_assets.list' %}" class="btn btn-secondary my-3">Back</a>
+            <a href="{% url 'manual_asset.update' pk=manual_asset.id %}" class="btn btn-secondary">Edit</a>
+            <a href="{% url 'manual_asset.delete' pk=manual_asset.id %}" class="btn btn-danger">Delete</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endblock content_display %}

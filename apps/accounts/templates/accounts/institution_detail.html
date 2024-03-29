@@ -1,0 +1,30 @@
+{% extends 'custom_layouts/base-navigationheader.html' %}
+  {% block content_display %}
+    <!-- Table -->
+    <div class="row justify-content-center">
+      <div class="col-lg-8 col-md-8">
+        <div class="card bg-secondary border-0">
+          <div class="card-body px-lg-5 py-lg-5">
+            <div class="text-center text-muted mb-4">
+              <h2>Institution Profile Details</h2>
+            </div>
+            <div class="text-center text-muted mb-2">
+              <a href="#" class="avatar avatar-lg rounded-circle">
+                <img alt="Image placeholder" src={{institution.get_institution_logo}}>
+              </a>
+            </div>
+          <div>
+            <label>Institution:</label><p>{{institution.get_name_display}}</p>
+            <label>Description:</label><p>{{institution.description}}</p>
+            <label>Number of Accounts:</label><a href="{% url 'accounts.filteredlist' parent_id=institution.id %}" class="nav-link">{{institution.accounts.count}}</a>
+            <label>Last Updated:</label><p>{{institution.last_updated}}</p>
+          </div>
+          <div class="col text-center">
+            <a href="{% url 'institutions.list' %}" class="btn btn-secondary my-3">Back</a>
+            <a href="{% url 'institution.update' pk=institution.id %}" class="btn btn-secondary">Edit</a>
+            <a href="{% url 'institution.delete' pk=institution.id %}" class="btn btn-danger">Delete</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endblock content_display %}

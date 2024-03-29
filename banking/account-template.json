@@ -1,0 +1,11 @@
+{
+    "authentication": {
+        "userCode": "012345678901",
+        "password": "YourPassword123",
+        "securityQuestions": {
+            "Quelle est l'année (aaaa) de naissance de mon frère le plus âgé?": "1985",
+            "Quel est le numéro civique de l'endroit où j'habitais à 5 ans?": "555",
+            "Quel est le nom de la ville/municipalité de l'école que je fréquentais à ma deuxième année du secondaire?": "Saint-Émile"
+        }
+    }
+}

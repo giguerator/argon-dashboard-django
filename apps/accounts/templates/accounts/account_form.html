@@ -1,0 +1,29 @@
+{% extends 'custom_layouts/base-navigationheader.html' %}
+  {% block content_display %}
+    <!-- Table -->
+    <div class="row justify-content-center">
+      <div class="col-lg-8 col-md-8">
+        <div class="card bg-secondary border-0">
+          <div class="card-body px-lg-5 py-lg-5">
+            <div class="text-center text-muted mb-4">
+              <h2>Fill account details</h2>
+            </div>
+            <form method='POST'>{% csrf_token %}
+              {{ form.as_p }}
+              <div class="col text-center">
+                <button type="submit" class="btn btn-primary my-5">Submit</button>
+                <a href="{% url 'accounts.list' %}" class ="btn btn-secondary ">Cancel</a>
+                <a href="{% url 'institution.new' %}" class ="btn btn-secondary ">New Institution Profile</a>
+              </div>
+            </form>
+            {% if form.errors %}
+              <div class="alert alert-danger my-5">
+                {{form.errors.number.as_text}}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endblock content_display %}
+

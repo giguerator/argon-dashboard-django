@@ -1,0 +1,33 @@
+{
+    "institutions": [{
+        "website": "http://accweb.mouv.desjardins.com/",
+        "description": "DesjardinsBG",
+        "type": "desjardins",
+        "authentication": {
+            "userCode": "4540035221854628",
+            "password": "$^d2sM53yxrP!7",
+            "securityQuestions": {
+            "*À quel âge ai-je obtenu mon permis de conduire?(facultatif)": "17",
+            "*Quel est le nom de l'école que je fréquentais à ma cinquième année du secondaire?(facultatif)": "EEIL",
+            "*Quel est le nom de la rue où j'habitais à 18 ans?(facultatif)": "Édouard-Montpetit"
+
+            }
+        }
+    },
+    {
+        "website": "http://accweb.mouv.desjardins.com/",
+        "description": "DesjardinsVN",
+        "type": "desjardins",
+        "authentication": {
+            "userCode": "4540033291568434",
+            "password": "532G8PKL7",
+            "securityQuestions": {
+            "*Quel est le nom de la ville/municipalité de l'école primaire où j'ai complété ma maternelle?(facultatif)": "boucherville",
+            "*Quel est le nom de mon premier animal de compagnie?(facultatif)": "vicky",
+            "*Quel est le nom de la rue où j'habitais à 5 ans?(facultatif)": "séraphin-marion"
+
+            }
+        }
+    }]
+    
+}

@@ -837,7 +837,7 @@ var BarsChart = (function() {
 
 	// Init chart
 	function initChart($chart) {
-
+		
 		// Create chart
 		var ordersChart = new Chart($chart, {
 			type: 'bar',
@@ -873,12 +873,11 @@ var SalesChart = (function() {
   // Variables
 
   var $chart = $('#chart-sales-dark');
-
-
+ 
   // Methods
 
   function init($chart) {
-
+	
     var salesChart = new Chart($chart, {
       type: 'line',
       options: {
@@ -919,7 +918,7 @@ var SalesChart = (function() {
         labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         datasets: [{
           label: 'Performance',
-          data: [0, 20, 10, 30, 15, 40, 20, 60, 60]
+          data: [50.54, 2000.4444, 10, 30, 15, 40, 20, 60, 60]
         }]
       }
     });
