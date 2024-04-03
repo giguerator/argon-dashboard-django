@@ -1,6 +1,5 @@
 {% extends 'custom_layouts/base-navigationheader.html' %}
   {% block content_display %}
-    <!-- Table -->
     <div class="row justify-content-center">
       <div class="col-lg-8 col-md-8">
         <div class="card bg-secondary border-0">
@@ -16,7 +15,7 @@
           <div>
             <label>Institution:</label><p>{{institution.get_name_display}}</p>
             <label>Description:</label><p>{{institution.description}}</p>
-            <label>Number of Accounts:</label><a href="{% url 'accounts.filteredlist' parent_id=institution.id %}" class="nav-link">{{institution.accounts.count}}</a>
+            <label>Number of Accounts:</label><a href="{% url 'accounts.filteredlist' parent_id=institution.id %}" class="nav-link">{{ account_count }}</a>
             <label>Last Updated:</label><p>{{institution.last_updated}}</p>
           </div>
           <div class="col text-center">

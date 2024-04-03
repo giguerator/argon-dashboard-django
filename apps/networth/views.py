@@ -9,7 +9,8 @@ from django.http.response import HttpResponseRedirect
 
 from .models import ManualAsset
 from .forms import ManualAssetForm
-from apps.accounts.models import Account, Institution, get_total_account_value
+from apps.accounts.models import get_total_account_value
+from utilities.utilities import value_over_time_report, combine_reports_over_time
 
 def get_total_asset_value(assets):
         total = 0
@@ -105,7 +106,33 @@ class NetworthSummaryView(LoginRequiredMixin, ListView):
         asset_total = get_total_asset_value(assets)
         context['manual_assets_total'] = asset_total
 
-        context['networth']= asset_total + account_total
+        context['networth'] = asset_total + account_total
+
+        span=self.request.GET.get('chart_span')
+        if span is None:
+            span = '1y'
+
+        context['span_activated'] = {
+            'max': 'secondary',
+            '5y': 'secondary',
+            '1y': 'secondary',
+            '6m': 'secondary',
+            '1m': 'secondary',
+            '2w': 'secondary',
+        }
+        context['span_activated'][span]='primary'
+
+        networth_report = ManualAsset.objects.none()
+        for account in self.request.user.accounts.all():
+            account_report, account_report_labels = value_over_time_report(account)
+            networth_report, networth_report_labels = combine_reports_over_time(networth_report, account_report)
+
+        for manual_asset in self.request.user.manual_assets.all():
+            manual_asset_report, manual_asset_report_labels = value_over_time_report(manual_asset)
+            networth_report, networth_report_labels = combine_reports_over_time(networth_report, manual_asset_report)
+
+        context['networth_report'] = list(networth_report)
+        context['networth_report_labels'] = networth_report_labels
 
         return context
     

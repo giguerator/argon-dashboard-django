@@ -89,9 +89,10 @@ function AccountChart(data, labels=months) {
             scales: {
                 yAxes: [{
                     gridLines: {
-                        lineWidth: 1,
+                        lineWidth: 0.5,
+                        zeroLineWidth: 1,
                         color: Charts.colors.gray[700],
-                        zeroLineColor: Charts.colors.gray[200]
+                        zeroLineColor: Charts.colors.gray[400]
                     },
                     ticks: {
                         callback: function (value) {

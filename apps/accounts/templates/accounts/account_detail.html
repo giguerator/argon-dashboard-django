@@ -33,6 +33,14 @@
                 <div class="card-header bg-transparent">
                   <div class="col">
                     <h4 class="text-light ls-1">Value Over Time Chart</h4>
+                    <div class="mt--4 text-right">
+                      <a href="?chart_span=max" class="btn btn-sm btn-{{span_activated.max}}">Max</a>
+                      <a href="?chart_span=5y" class="btn btn-sm btn-{{span_activated.5y}}">5y</a>
+                      <a href="?chart_span=1y" class="btn btn-sm btn-{{span_activated.1y}}">1y</a>
+                      <a href="?chart_span=6m" class="btn btn-sm btn-{{span_activated.6m}}">6m</a>
+                      <a href="?chart_span=1m" class="btn btn-sm btn-{{span_activated.1m}}">1m</a>
+                      <a href="?chart_span=2w" class="btn btn-sm btn-{{span_activated.2w}}">2w</a>
+                    </div>
                   </div>
                 </div>
                 <div class="card-body">
@@ -119,7 +127,6 @@
 <script type="application/javascript" src="{% static 'accounts_assets/chart_management.js' %}"></script>
 
 <script type="application/javascript">
-  //Test();
   AccountChart({{ account_report|safe }}, {{ account_report_labels|safe }});
 </script>
 {% endblock javascripts %}

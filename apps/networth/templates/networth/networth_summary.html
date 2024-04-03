@@ -1,145 +1,175 @@
+{% load static %}
 {% extends 'custom_layouts/base-navigationheader.html' %}
   {% block content_display %}
   <div class="card">
-    <div class="accordion-1">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-12 ml-auto">
-            <div class="accordion my-0" id="NetworthSummary">
-              <div class="card">
-                <div class="card-header border-primary" id="totalAssets">
-                  <h4 class="mb-0">
-                    <button class="btn btn-link w-100 text-primary text-left" type="button" data-toggle="collapse" data-target="#assetCollapse" aria-expanded="true" aria-controls="assetCollapse">
-                      <div class="row">
-                        <div class="col-6">
-                          <h2 class="text-default">Current Net Worth</h2>
-                        </div>
-                        <div class="col-sm" style="text-align: right;">
-                          <h2 class="text-default">{{networth}}$</h2>
-                        </div>
-                        <div class="col-sm" style="text-align: center;">
-                          <span class="badge badge-success">No issues detected</span>
-                          <i class="ni ni-bold-down float-right"></i>
-                        </div>
-                      </div>  
-                    </button>
-                  </h4>
-                </div>
-                <div id="assetCollapse" class="collapse show" aria-labelledby="totalAssets" data-parent="#NetworthSummary">
-                  <div class="accordion ml-4 my-0" id="institutionssummary">
-                    <div class="card">
-                      <div class="card-header border-secondary" id="totalInstitutions">
-                        <h5 class="mb-0">
-                          <button class="btn btn-link w-100 text-primary text-left" type="button" data-toggle="collapse" data-target="#institutionsCollapse" aria-expanded="true" aria-controls="instititionsCollapse">
-                            <div class="row">
-                              <div class="col-6">
-                                <h3 class="text-default">Banking</h3>
-                              </div>
-                              <div class="col-sm" style="text-align: right;">
-                                <h3 class="text-default">{{accounts_total}}$</h3>
-                              </div>
-                              <div class="col-sm" style="text-align: center;">
-                                <span class="badge badge-success">No issues detected</span>
-                                <i class="ni ni-bold-down float-right"></i>
+    <div class="row mx-1 my-3">
+      <div class="col">
+        <div class="card bg-default">
+          <div class="card-header bg-transparent">
+            <div class="col">
+              <h4 class="text-light ls-1">Net Worth Over Time Chart</h4>
+              <div class="mt--4 text-right">
+                <a href="?chart_span=max" class="btn btn-sm btn-{{span_activated.max}}">Max</a>
+                <a href="?chart_span=5y" class="btn btn-sm btn-{{span_activated.5y}}">5y</a>
+                <a href="?chart_span=1y" class="btn btn-sm btn-{{span_activated.1y}}">1y</a>
+                <a href="?chart_span=6m" class="btn btn-sm btn-{{span_activated.6m}}">6m</a>
+                <a href="?chart_span=1m" class="btn btn-sm btn-{{span_activated.1m}}">1m</a>
+                <a href="?chart_span=2w" class="btn btn-sm btn-{{span_activated.2w}}">2w</a>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="chart chart-sm">
+              <!-- Chart wrapper -->
+              <canvas id="chart-accounts" class="chart-canvas"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> 
+    <div class="row">
+      <div class="col">
+        <div class="accordion-1">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-12 ml-auto">
+                <div class="accordion my-0" id="NetworthSummary">
+                  <div class="card">
+                    <div class="card-header border-bottom" id="totalAssets">
+                      <h4 class="mb-0">
+                        <button class="btn btn-link w-100 text-primary text-left" type="button" data-toggle="collapse" data-target="#assetCollapse" aria-expanded="true" aria-controls="assetCollapse">
+                          <div class="row">
+                            <div class="col-6">
+                              <h2 class="text-default">Current Net Worth</h2>
+                            </div>
+                            <div class="col-sm" style="text-align: right;">
+                              <h2 class="text-default">{{networth}}$</h2>
+                            </div>
+                            <div class="col-sm" style="text-align: center;">
+                              <span class="badge badge-success">No issues detected</span>
+                              <i class="ni ni-bold-down float-right"></i>
+                            </div>
+                          </div>  
+                        </button>
+                      </h4>
+                    </div>
+                    <div id="assetCollapse" class="collapse show" aria-labelledby="totalAssets" data-parent="#NetworthSummary">
+                      <div class="accordion ml-4 my-1" id="institutionssummary">
+                        <div class="card">
+                          <div class="card-header border-bottom my-1" id="totalInstitutions">
+                            <h5 class="mb-0">
+                              <button class="btn btn-link w-100 text-primary text-left" type="button" data-toggle="collapse" data-target="#institutionsCollapse" aria-expanded="true" aria-controls="instititionsCollapse">
+                                <div class="row">
+                                  <div class="col-6">
+                                    <h3 class="text-default">Banking</h3>
+                                  </div>
+                                  <div class="col-sm" style="text-align: right;">
+                                    <h3 class="text-default">{{accounts_total}}$</h3>
+                                  </div>
+                                  <div class="col-sm" style="text-align: center;">
+                                    <span class="badge badge-success">No issues detected</span>
+                                    <i class="ni ni-bold-down float-right"></i>
+                                  </div>
+                                </div>
+                              </button>
+                            </h5>
+                          </div>
+                          <div id="institutionsCollapse" class="collapse show" aria-labelledby="totalInstitutions" data-parent="#institutionssummary">
+                            {% for institution in institutions %}
+                            <div class="accordion ml-4 my-1" id="summaryInstitution{{institution.id}}">
+                              <div class="card">
+                                <div class="card-header border-bottom my-1" id="totalInstitution{{institution.id}}">
+                                  <h6 class="mb-0">
+                                    <button class="btn btn-link w-100 text-primary text-left" type="button" data-toggle="collapse" data-target="#institition{{institution.id}}Collapse" aria-expanded="true" aria-controls="institition{{institution.id}}Collapse">
+                                      <div class="row">
+                                        <div class="col-6 media align-items-center" style="text-align: left;">
+                                          <span class="avatar rounded-circle">
+                                            <img alt="Image placeholder" src={{institution.get_institution_logo}}>
+                                          </span>
+                                          <span class="h4 ml-2 text-default">{{institution}}</span>
+                                        </div>
+                                        <div class="col-sm align-items-center" style="text-align: right;">
+                                          <h4 class="text-default">{{institution.get_total_value}}$</h4>
+                                        </div>
+                                        <div class="col-sm align-items-center" style="text-align: center;">
+                                          <span class="badge badge-success">No issues detected</span>
+                                          <i class="ni ni-bold-down float-right"></i>
+                                        </div>
+                                      </div> 
+                                    </button>
+                                  </h6>
+                                </div>
+                                <div id="institition{{institution.id}}Collapse" class="collapse show" aria-labelledby="totalInstitution{{institution.id}}" data-parent="#summaryInstitution{{institution.id}}">
+                                  {% for account in institution.get_accounts %}
+                                  <div class="card ml-6 my-1">
+                                    <div class="card-header border-bottom">
+                                      <h6 class="mb-0">
+                                        <div class="row">
+                                          <div class="col-6" media align-items-center"" style="text-align: left;">
+                                            <h5 class="ml-2 text-default">{{account.number}} - {{account.description}}</h5>
+                                          </div>
+                                          <div class="col-sm align-items-center" style="text-align: right;">
+                                            <h5 class="text-default">{% if account.type == 'CR' %}{% widthratio account.balance 1 -1 %}{% else %}{{account.balance}}{% endif %}$</h5>
+                                          </div>
+                                          <div class="col-sm align-items-center" style="text-align: center;">
+                                            <span class="badge badge-success">No issues detected</span>
+                                            <i class="ni"></i>
+                                          </div>
+                                        </div>
+                                      </h6>
+                                    </div>
+                                  </div>
+                                  {% endfor %}
+                                </div>
                               </div>
                             </div>
-                          </button>
-                        </h5>
+                            {% endfor %}
+                          </div>
+                        </div>
                       </div>
-                      <div id="institutionsCollapse" class="collapse show" aria-labelledby="totalInstitutions" data-parent="#institutionssummary">
-                        {% for institution in institutions %}
-                        <div class="accordion ml-4 my-0" id="summaryInstitution{{institution.id}}">
-                          <div class="card">
-                            <div class="card-header border-secondary" id="totalInstitution{{institution.id}}">
-                              <h6 class="mb-0">
-                                <button class="btn btn-link w-100 text-primary text-left" type="button" data-toggle="collapse" data-target="#institition{{institution.id}}Collapse" aria-expanded="true" aria-controls="institition{{institution.id}}Collapse">
+                      <div class="accordion ml-4 my-1" id="summaryManualAssets">
+                        <div class="card">
+                          <div class="card-header border-bottom" id="totalManualAsset">
+                            <h6 class="mb-0">
+                              <button class="btn btn-link w-100 text-primary text-left" type="button" data-toggle="collapse" data-target="#manualAssetCollapse" aria-expanded="true" aria-controls="manualAssetCollapse">
+                                <div class="row">
+                                  <div class="col-6 media align-items-center" style="text-align: left;">
+                                    <h3 class="text-default">Manually Added Assets</h3>
+                                  </div>
+                                  <div class="col-sm align-items-center" style="text-align: right;">
+                                    <h3 class="text-default">{{manual_assets_total}}$</h3>
+                                  </div>
+                                  <div class="col-sm align-items-center" style="text-align: center;">
+                                    <span class="badge badge-success">No issues detected</span>
+                                    <i class="ni ni-bold-down float-right"></i>
+                                  </div>
+                                </div> 
+                              </button>
+                            </h6>
+                          </div>
+                          <div id="manualAssetCollapse" class="collapse show" aria-labelledby="totalManualAsset" data-parent="#summaryManualAssets">
+                            {% for manual_asset in manual_assets %}
+                            <div class="card ml-6 my-1">
+                              <div class="card-header border-bottom my-1">
+                                <h6 class="mb-0">
                                   <div class="row">
-                                    <div class="col-6 media align-items-center" style="text-align: left;">
-                                      <span class="avatar rounded-circle">
-                                        <img alt="Image placeholder" src={{institution.get_institution_logo}}>
-                                      </span>
-                                      <span class="h4 ml-2 text-default">{{institution}}</span>
+                                    <div class="col-6" media align-items-center"" style="text-align: left;">
+                                      <h5 class="ml-2 text-default">{{manual_asset.description}}</h5>
                                     </div>
                                     <div class="col-sm align-items-center" style="text-align: right;">
-                                      <h4 class="text-default">{{institution.get_total_value}}$</h4>
+                                      <h5 class="text-default">{{manual_asset.current_value}}$</h5>
                                     </div>
                                     <div class="col-sm align-items-center" style="text-align: center;">
                                       <span class="badge badge-success">No issues detected</span>
-                                      <i class="ni ni-bold-down float-right"></i>
+                                      <i class="ni"></i>
                                     </div>
-                                  </div> 
-                                </button>
-                              </h6>
+                                  </div>
+                                </h6>
+                              </div>
                             </div>
-                            <div id="institition{{institution.id}}Collapse" class="collapse show" aria-labelledby="totalInstitution{{institution.id}}" data-parent="#summaryInstitution{{institution.id}}">
-                              {% for account in institution.get_accounts %}
-                              <div class="card ml-6">
-                                <div class="card-header">
-                                  <h6 class="mb-0">
-                                    <div class="row">
-                                      <div class="col-6" media align-items-center"" style="text-align: left;">
-                                        <h5 class="ml-2 text-default">{{account.number}} - {{account.description}}</h5>
-                                      </div>
-                                      <div class="col-sm align-items-center" style="text-align: right;">
-                                        <h5 class="text-default">{{account.balance}}$</h5>
-                                      </div>
-                                      <div class="col-sm align-items-center" style="text-align: center;">
-                                        <span class="badge badge-success">No issues detected</span>
-                                        <i class="ni"></i>
-                                      </div>
-                                    </div>
-                                  </h6>
-                                </div>
-                              </div>
-                              {% endfor %}
-                            </div>
-                          </div>
+                            {% endfor %}
                         </div>
-                        {% endfor %}
                       </div>
-                    </div>
-                  </div>
-                  <div class="accordion ml-4 my-0" id="summaryManualAssets">
-                    <div class="card">
-                      <div class="card-header border-secondary" id="totalManualAsset">
-                        <h6 class="mb-0">
-                          <button class="btn btn-link w-100 text-primary text-left" type="button" data-toggle="collapse" data-target="#manualAssetCollapse" aria-expanded="true" aria-controls="manualAssetCollapse">
-                            <div class="row">
-                              <div class="col-6 media align-items-center" style="text-align: left;">
-                                <h3 class="text-default">Manually Added Assets</h3>
-                              </div>
-                              <div class="col-sm align-items-center" style="text-align: right;">
-                                <h3 class="text-default">{{manual_assets_total}}$</h3>
-                              </div>
-                              <div class="col-sm align-items-center" style="text-align: center;">
-                                <span class="badge badge-success">No issues detected</span>
-                                <i class="ni ni-bold-down float-right"></i>
-                              </div>
-                            </div> 
-                          </button>
-                        </h6>
-                      </div>
-                      <div id="manualAssetCollapse" class="collapse show" aria-labelledby="totalManualAsset" data-parent="#summaryManualAssets">
-                        {% for manual_asset in manual_assets %}
-                        <div class="card ml-6">
-                          <div class="card-header">
-                            <h6 class="mb-0">
-                              <div class="row">
-                                <div class="col-6" media align-items-center"" style="text-align: left;">
-                                  <h5 class="ml-2 text-default">{{manual_asset.description}}</h5>
-                                </div>
-                                <div class="col-sm align-items-center" style="text-align: right;">
-                                  <h5 class="text-default">{{manual_asset.current_value}}$</h5>
-                                </div>
-                                <div class="col-sm align-items-center" style="text-align: center;">
-                                  <span class="badge badge-success">No issues detected</span>
-                                  <i class="ni"></i>
-                                </div>
-                              </div>
-                            </h6>
-                          </div>
-                        </div>
-                        {% endfor %}
                     </div>
                   </div>
                 </div>
@@ -152,3 +182,11 @@
   </div>
   
   {% endblock content_display %}
+
+  {% block javascripts %}
+<script type="application/javascript" src="{% static 'accounts_assets/chart_management.js' %}"></script>
+
+<script type="application/javascript">
+  AccountChart({{ networth_report|safe }}, {{ networth_report_labels|safe }});
+</script>
+{% endblock javascripts %}

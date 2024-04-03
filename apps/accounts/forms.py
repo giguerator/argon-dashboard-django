@@ -8,13 +8,13 @@ from .models import Account, Institution
 class AccountForm(forms.ModelForm):
     class Meta:
         model = Account
-        fields = ['parent_institution','number', 'description', 'type', 'balance']
+        fields = ['parent_institution','number', 'description', 'type', 'current_value']
         widgets = {
             'parent_institution': forms.Select(attrs={'class': 'form-control'}),
             'number': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.TextInput(attrs={"class": 'form-control'}),
             'type': forms.Select(attrs={'class': 'form-control'}),
-            'balance': forms.NumberInput(attrs={'class': 'form-control'}),
+            'current_value': forms.NumberInput(attrs={'class': 'form-control'}),
         }
         labels = {
             'parent_institution': 'Associated Institution Profile',

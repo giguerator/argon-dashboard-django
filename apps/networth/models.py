@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+import datetime
+
+from apps.core_assets.models import AssetValue, Asset
 
 ASSET_TYPES = [
         ('RES', 'Real Estate'),
@@ -9,13 +12,11 @@ ASSET_TYPES = [
         ('OTH', 'Other'),
     ]
 
-class ManualAsset(models.Model):
+class ManualAsset(Asset, models.Model):
     category = models.CharField(max_length=3, choices = ASSET_TYPES, default ='OTH')
-    description = models.CharField(max_length = 400)
-    current_value = models.DecimalField(max_digits=10,decimal_places=2)
-    last_updated = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="manual_assets")
 
-    def __str__(self):
-        return self.description
+    def save(self, commit=True):
+        asset_value = AssetValue(user = self.user, value_string = self.current_value, value_date = datetime.date.today(), asset = self)
+        obj=super().save()
+        return obj
 

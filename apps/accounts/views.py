@@ -9,7 +9,8 @@ from django.http.response import HttpResponseRedirect
 from django.core.paginator import Paginator
 
 from .forms import AccountForm, InstitutionForm
-from .models import Account, Institution, AccountValue
+from .models import Account, Institution
+from apps.core_assets.models import AssetValue
 
 class AccountDeleteView(DeleteView):
     model = Account
@@ -41,9 +42,9 @@ class AccountsListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         if 'parent_id' in self.kwargs:
-            return self.request.user.accounts.filter(parent_institution=self.kwargs['parent_id'])
+            return self.request.user.assets.filter(parent_institution=self.kwargs['parent_id'])
         else:
-            return self.request.user.accounts.all()
+            return self.request.user.assets.filter(child_class='Account')
         
     def parent_name(self):
         parent_institution=Institution.objects.get(pk=self.kwargs['parent_id'])
@@ -65,11 +66,12 @@ class AccountCreateView(CreateView):
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
 
-class AccountDetailsView(DetailView):
+class AccountDetailsView(LoginRequiredMixin, DetailView):
     model = Account
     context_object_name = "account"
     title = 'Account Details'
     template_name = 'accounts/account_detail.html'
+    login_url = "/login" 
     hierarchy = [
         {'name': 'Accounts', 'urlname': 'accounts.list'},
     ]
@@ -80,12 +82,27 @@ class AccountDetailsView(DetailView):
         context = super().get_context_data(**kwargs)
         account_values_pagin = Paginator(self.object.values.order_by('-value_date'),10)
         page_number = self.request.GET.get("page")
-        context['account_report'], context['account_report_labels'] = self.object.account_over_time_report()
+        
+        span=self.request.GET.get('chart_span')
+        if span is None:
+            span = '1y'
+
+        context['account_report'], context['account_report_labels'] = self.object.account_over_time_report(span)
+
+
         if page_number is not None:
             self.page_number = page_number
 
         context['account_values'] = account_values_pagin.page(self.page_number)
-
+        context['span_activated'] = {
+            'max': 'secondary',
+            '5y': 'secondary',
+            '1y': 'secondary',
+            '6m': 'secondary',
+            '1m': 'secondary',
+            '2w': 'secondary',
+        }
+        context['span_activated'][span]='primary'
         return context
 
     
@@ -127,6 +144,13 @@ class InstitutionDetailsView(LoginRequiredMixin, DetailView):
     hierarchy = [
         {'name': 'Institution Profiles', 'urlname': 'institutions.list'},
     ]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['account_count'] = self.object.get_account_count
+        return context
+
 
 class InstitutionDeleteView(DeleteView):
     model = Institution
