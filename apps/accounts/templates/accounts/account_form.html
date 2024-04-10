@@ -1,29 +1,48 @@
 {% extends 'custom_layouts/base-navigationheader.html' %}
   {% block content_display %}
-    <!-- Table -->
-    <div class="row justify-content-center">
-      <div class="col-lg-8 col-md-8">
-        <div class="card bg-secondary border-0">
-          <div class="card-body px-lg-5 py-lg-5">
-            <div class="text-center text-muted mb-4">
-              <h2>Fill account details</h2>
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <div class="card-header border-bottom">
+          <div class="mb-0">
+            <h3 class="mb-0">Account Form</h3>
+            <div class="mt--4 text-right">
+              <button type="button" onclick="history.back()" class="btn btn-sm btn-secondary">Back</button>
+              <a href="{% url 'institution.new' %}" class ="btn btn-sm btn-secondary ">New Institution Profile</a>
             </div>
-            <form method='POST'>{% csrf_token %}
-              {{ form.as_p }}
-              <div class="col text-center">
-                <button type="submit" class="btn btn-primary my-5">Submit</button>
-                <a href="{% url 'accounts.list' %}" class ="btn btn-secondary ">Cancel</a>
-                <a href="{% url 'institution.new' %}" class ="btn btn-secondary ">New Institution Profile</a>
-              </div>
-            </form>
-            {% if form.errors %}
-              <div class="alert alert-danger my-5">
-                {{form.errors.number.as_text}}
-              </div>
-            {% endif %}
           </div>
+          {% if form.errors %}
+          <div class="mb-0 mt-5 mb--3">
+                <div class="alert alert-danger">
+                  {{form.errors.number.as_text}}
+                </div>
+          </div>
+          {% endif %}
         </div>
+        <form method='POST'>{% csrf_token %}
+          <div class="card-body border-0">
+            <div class="row">
+              <div class="col border-left">
+                <label>Account Number:</label><p>{{form.number}}</p>
+                <label>Institution Profile:</label><p>{{form.parent_institution}}</p>
+                <label>Description:</label><p>{{form.description}}</p>
+              </div>
+              <div class="col border-left">
+                <label>Type:</label><p>{{form.type}}</p>
+                <label>Current Balance:</label><p>{{form.current_value}}</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer bg-transparent">
+            
+            <div class="col text-center">
+              <button type="button" onclick="history.back()" class="btn btn btn-secondary">Cancel</button>
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
+  </div>
   {% endblock content_display %}
 

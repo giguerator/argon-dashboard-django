@@ -1,29 +1,90 @@
 {% extends 'custom_layouts/base-navigationheader.html' %}
   {% block content_display %}
-    <div class="row justify-content-center">
-      <div class="col-lg-8 col-md-8">
-        <div class="card bg-secondary border-0">
-          <div class="card-body px-lg-5 py-lg-5">
-            <div class="text-center text-muted mb-4">
-              <h2>Institution Profile Details</h2>
+  {% load static %}
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <div class="card-header border-bottom">
+            <div class="mb-0">
+              <h3 class="mb-0">Institution Profile Details</h3>
+              <div class="mt--4 text-right">
+                <button type="button" onclick="history.back()" class="btn btn-sm btn-secondary">Back</button>
+                <a href="{% url 'institution.update' pk=institution.id %}" class="btn btn-sm btn-secondary">Edit</a>
+                <a href="{% url 'institution.delete' pk=institution.id %}" class="btn btn-sm btn-danger">Delete</a>
+              </div>
             </div>
-            <div class="text-center text-muted mb-2">
-              <a href="#" class="avatar avatar-lg rounded-circle">
-                <img alt="Image placeholder" src={{institution.get_institution_logo}}>
-              </a>
-            </div>
-          <div>
-            <label>Institution:</label><p>{{institution.get_name_display}}</p>
-            <label>Description:</label><p>{{institution.description}}</p>
-            <label>Number of Accounts:</label><a href="{% url 'accounts.filteredlist' parent_id=institution.id %}" class="nav-link">{{ account_count }}</a>
-            <label>Last Updated:</label><p>{{institution.last_updated}}</p>
           </div>
-          <div class="col text-center">
-            <a href="{% url 'institutions.list' %}" class="btn btn-secondary my-3">Back</a>
-            <a href="{% url 'institution.update' pk=institution.id %}" class="btn btn-secondary">Edit</a>
-            <a href="{% url 'institution.delete' pk=institution.id %}" class="btn btn-danger">Delete</a>
+          <div class="card-body border-0">
+            <div class="row">
+              <div class="col col-lg-4 border-left">
+                <label>Institution:</label>
+                  <p class="my-0">
+                    <div class="media align-items-center">
+                      <a href="#" class="avatar avatar-lg rounded-circle">
+                        <img alt="Image placeholder" src={{institution.get_institution_logo}}>
+                      </a>
+                      <div class="media-body">
+                        <h2 class="name mb-0 nav-link">{{institution.get_name_display}}</h2>
+                      </div>
+                    </div>
+                  </p>
+              </div>
+              <div class="col border-left">
+                <label>Description:</label><p>{{institution.description}}</p>
+                <label>Number of Accounts:</label><p>{{ account_count }}</p>
+                <label>Last Updated:</label><p>{{institution.last_updated}}</p>
+              </div>
+            </div>
+          </div>
+          <div class="row mx-1">
+            <div class="col">
+              <div class="card bg-default">
+                <div class="card-header bg-transparent">
+                  <div class="col">
+                    <h4 class="text-light ls-1">Value Over Time Chart</h4>
+                    <div class="mt--4 text-right">
+                      <a href="?chart_span=max" class="btn btn-sm btn-{{span_activated.max}}">Max</a>
+                      <a href="?chart_span=5y" class="btn btn-sm btn-{{span_activated.5y}}">5y</a>
+                      <a href="?chart_span=1y" class="btn btn-sm btn-{{span_activated.1y}}">1y</a>
+                      <a href="?chart_span=6m" class="btn btn-sm btn-{{span_activated.6m}}">6m</a>
+                      <a href="?chart_span=1m" class="btn btn-sm btn-{{span_activated.1m}}">1m</a>
+                      <a href="?chart_span=2w" class="btn btn-sm btn-{{span_activated.2w}}">2w</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="chart chart-sm">
+                    <!-- Chart wrapper -->
+                    <canvas id="chart-accounts" class="chart-canvas"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> 
+          <div class="row mx-1">
+            <div class="col">
+              <div class="card">
+                <div class="card-header bg-transparent border-bottom">
+                  <h4 class="text-default ls-1">Accounts</h4>
+                  <div class="mt--4 text-right">
+                    <a href="accounts/{{institution.id}}/new" class="btn btn-sm btn-secondary">New</a>
+                  </div>
+                </div>
+                  {% include 'includes/account_table.html' %}
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
   {% endblock content_display %}
+
+  <!-- Specific JS goes HERE --> 
+{% block javascripts %}
+<script type="application/javascript" src="{% static 'accounts_assets/chart_management.js' %}"></script>
+
+<!--<script type="application/javascript">
+  AccountChart({{ account_report|safe }}, {{ account_report_labels|safe }});
+</script>-->
+{% endblock javascripts %}

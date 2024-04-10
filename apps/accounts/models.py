@@ -22,9 +22,9 @@ def get_total_account_value(accounts):
         total = 0
         for account in accounts:
             if account.type == 'CR':
-                total = total - account.balance
+                total = total - account.current_value
             else:
-                total = total + account.balance
+                total = total + account.current_value
         return total 
 
 def get_institution_logo(institution_name):
@@ -54,17 +54,17 @@ class Institution(models.Model):
         return self.get_name_display() + ' - ' + self.description
     
     def get_total_value(self):
-        return get_total_account_value(self.assets.all())
+        return get_total_account_value(self.accounts.all())
     
     def get_account_count(self):
         try:
-            account_count = len(self.assets)
+            account_count = len(self.accounts)
         except:
             return 0
         return account_count
     
     def get_accounts(self):
-        return self.assets.all()
+        return self.accounts.all()
 
 class Desjardins(Institution):
     security_questions_1=models.TextField()
@@ -77,13 +77,15 @@ class Desjardins(Institution):
 class Account(Asset, models.Model):
     number = models.CharField(max_length=64)
     type = models.CharField(max_length=2, choices = TYPE_CHOICES, default = 'DB')
-    parent_institution = models.ForeignKey(Institution, on_delete=models.CASCADE, related_name="assets")
+    parent_institution = models.ForeignKey(Institution, on_delete=models.CASCADE, related_name="accounts")
+    user_child = models.ForeignKey(User, on_delete=models.CASCADE, related_name='accounts')
+
 
     def __str__(self):
         return self.parent_institution.get_name_display() + ' - ' + self.number
     
-    def save(self, commit=True): 
-        obj = super().save()
+    def save(self, *args, **kwargs): 
+        obj = super().save( *args, **kwargs)
         
         self.parent_institution.save()
         return obj

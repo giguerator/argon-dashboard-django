@@ -9,14 +9,7 @@ from django.http.response import HttpResponseRedirect
 
 from .models import ManualAsset
 from .forms import ManualAssetForm
-from apps.accounts.models import get_total_account_value
-from utilities.utilities import value_over_time_report, combine_reports_over_time
-
-def get_total_asset_value(assets):
-        total = 0
-        for asset in assets:
-            total = total + asset.current_value
-        return total 
+from apps.core_assets.models import Asset, AssetValue
 
 
 class ManualAssetListView(LoginRequiredMixin, ListView):
@@ -66,6 +59,7 @@ class ManualAssetCreateView(CreateView):
     def form_valid(self, form):
         self.object = form.save(commit = False)
         self.object.user = self.request.user
+        self.object.user_child = self.request.user
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
 
@@ -100,10 +94,10 @@ class NetworthSummaryView(LoginRequiredMixin, ListView):
         assets = self.request.user.manual_assets.all()
         context['manual_assets'] = assets
 
-        account_total = get_total_account_value(accounts)
+        account_total = Asset.get_total_asset_value(accounts)
         context['accounts_total'] = account_total
 
-        asset_total = get_total_asset_value(assets)
+        asset_total = Asset.get_total_asset_value(assets)
         context['manual_assets_total'] = asset_total
 
         context['networth'] = asset_total + account_total
@@ -122,16 +116,9 @@ class NetworthSummaryView(LoginRequiredMixin, ListView):
         }
         context['span_activated'][span]='primary'
 
-        networth_report = ManualAsset.objects.none()
-        for account in self.request.user.accounts.all():
-            account_report, account_report_labels = value_over_time_report(account)
-            networth_report, networth_report_labels = combine_reports_over_time(networth_report, account_report)
+        networth_report, networth_report_labels = Asset.multi_asset_value_over_time_report(self.request.user.assets.all(),span)
 
-        for manual_asset in self.request.user.manual_assets.all():
-            manual_asset_report, manual_asset_report_labels = value_over_time_report(manual_asset)
-            networth_report, networth_report_labels = combine_reports_over_time(networth_report, manual_asset_report)
-
-        context['networth_report'] = list(networth_report)
+        context['networth_report'] = networth_report
         context['networth_report_labels'] = networth_report_labels
 
         return context

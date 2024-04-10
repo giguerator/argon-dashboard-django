@@ -1,0 +1,68 @@
+<div class="table-responsive">
+    <table class="table align-items-center table-flush">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col" class="sort" data-sort="number">Number</th>
+          <th></th>
+          <th scope="col" class="sort" data-sort="institution">Institution Profile</th>
+          <th scope="col" class="sort" data-sort="description">Description</th>
+          <th scope="col" class="sort" data-sort="type">Type</th>
+          <th scope="col" class="sort" data-sort="balance">Balance</th>
+          <th scope="col" class="sort" data-sort="last_updated">Last Updated</th>
+        </tr>
+      </thead>
+      <tbody class="list">
+
+        {% for account in accounts %}
+        <tr>
+          <th>
+            <span class="text-default">{{account.number}}</span>
+          </th>
+          <td class="text-right">
+            <span class="dropdown">
+              <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-ellipsis-v"></i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                <a class="dropdown-item" href="{% url 'account.detail' pk=account.id %}">View</a>
+                <a class="dropdown-item" href="{% url 'account.update' pk=account.id %}">Edit</a>
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#deleteModal{{account.id}}">Delete</a>
+              </div>
+                {% include 'modals/account_delete.html' %}
+            </span>
+          </td>
+          <td scope="row">  
+            <div class="media align-items-center">
+              <a href="#" class="avatar avatar-sm rounded-circle">
+                <img alt="Image placeholder" src={{account.parent_institution.get_institution_logo}}>
+              </a>
+              <div class="media-body">
+                <a href="{% url 'institution.detail' pk=account.parent_institution.id %}" class="name mb-0 nav-link">{{account.parent_institution.description}}</a>
+              </div>
+            </div>
+          </th>
+          <td>
+            <span class="text-default">{{account.description|truncatechars:16}}</span>
+          </td>
+          <td>
+            <span class="text-default">{{account.get_type_display}}</span>
+          </td>
+          <td class="budget">
+            {% if account.type == 'CR' %}
+            <span class="text-red">({{account.current_value}}$)</span>
+            {% else %}
+            <span class="text-default">{{account.current_value}}$</span>
+            {% endif %}
+          </td>
+          <td>
+            <span class="badge badge-dot">
+              <i class="bg-warning"></i>
+              <span class="text-default text-sm">{{account.last_updated}}</span>
+            </span>
+          </td>
+        </tr>
+        {% endfor %}
+
+      </tbody>
+    </table>
+  </div>

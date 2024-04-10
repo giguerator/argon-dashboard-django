@@ -10,12 +10,11 @@ from django.core.paginator import Paginator
 
 from .forms import AccountForm, InstitutionForm
 from .models import Account, Institution
-from apps.core_assets.models import AssetValue
 
 class AccountDeleteView(DeleteView):
     model = Account
     success_url = '/accounts/accounts'
-    template_name = 'accounts/account_delete.html'
+    template_name = 'modals/account_delete.html'
     title = 'Delete Account'
     hierarchy = [
         {'name': 'Accounts', 'urlname': 'accounts.list'},
@@ -42,13 +41,17 @@ class AccountsListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         if 'parent_id' in self.kwargs:
-            return self.request.user.assets.filter(parent_institution=self.kwargs['parent_id'])
+            return self.request.user.accounts.filter(parent_institution=self.kwargs['parent_id'])
         else:
-            return self.request.user.assets.filter(child_class='Account')
+            return self.request.user.accounts.all()
         
     def parent_name(self):
         parent_institution=Institution.objects.get(pk=self.kwargs['parent_id'])
         return parent_institution
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
 
 class AccountCreateView(CreateView):
     model = Account
@@ -60,9 +63,16 @@ class AccountCreateView(CreateView):
         {'name': 'New', 'urlname': 'account.new'},
     ]
 
+    def get_initial(self):
+        initial = super().get_initial()
+        if 'parent_id' in self.kwargs:
+            initial['parent_institution']=Institution.objects.get(pk=self.kwargs['parent_id'])
+        return initial.copy()
+
     def form_valid(self, form):
         self.object = form.save(commit = False)
         self.object.user = self.request.user
+        self.object.user_child = self.request.user
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
 
@@ -80,14 +90,14 @@ class AccountDetailsView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        account_values_pagin = Paginator(self.object.values.order_by('-value_date'),10)
+        account_values_pagin = Paginator(self.object.asset_values.order_by('-value_date'),10)
         page_number = self.request.GET.get("page")
         
         span=self.request.GET.get('chart_span')
         if span is None:
             span = '1y'
 
-        context['account_report'], context['account_report_labels'] = self.object.account_over_time_report(span)
+        context['account_report'], context['account_report_labels'] = self.object.value_over_time_report(span)
 
 
         if page_number is not None:
@@ -147,7 +157,7 @@ class InstitutionDetailsView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
+        context['accounts']=self.object.accounts.all()
         context['account_count'] = self.object.get_account_count
         return context
 

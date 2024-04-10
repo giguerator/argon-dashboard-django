@@ -1,0 +1,30 @@
+  <div class="modal fade" id="deleteModal{{institution.id}}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel{{institution.id}}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-5" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel{{institution.id}}">Delete Institution Profile</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="text-default text-left" style="text-wrap: wrap;">
+            <div>
+              <span>Are you sure you want to delete <strong>{{institution}}</strong>?</span>
+            </div>
+            <div class="mt-2">
+              <span class="text-danger"><b>This action cannot be undone.</b></span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <form action="{% url 'institution.delete' pk=institution.id %}" method='POST'>{% csrf_token %}
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <input type="submit" class="btn btn-danger" value="Confirm">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  

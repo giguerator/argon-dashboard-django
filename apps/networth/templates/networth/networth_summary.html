@@ -1,6 +1,6 @@
-{% load static %}
 {% extends 'custom_layouts/base-navigationheader.html' %}
   {% block content_display %}
+  {% load static %}
   <div class="card">
     <div class="row mx-1 my-3">
       <div class="col">
@@ -109,7 +109,7 @@
                                             <h5 class="ml-2 text-default">{{account.number}} - {{account.description}}</h5>
                                           </div>
                                           <div class="col-sm align-items-center" style="text-align: right;">
-                                            <h5 class="text-default">{% if account.type == 'CR' %}{% widthratio account.balance 1 -1 %}{% else %}{{account.balance}}{% endif %}$</h5>
+                                            <h5 class="text-default">{% if account.type == 'CR' %}{% widthratio account.current_value 1 -1 %}{% else %}{{account.current_value}}{% endif %}$</h5>
                                           </div>
                                           <div class="col-sm align-items-center" style="text-align: center;">
                                             <span class="badge badge-success">No issues detected</span>

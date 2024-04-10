@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 
 from . import views
 
@@ -6,7 +6,7 @@ urlpatterns = [
     path('accounts', views.AccountsListView.as_view(), name="accounts.list"),
     path('<int:parent_id>/accounts', views.AccountsListView.as_view(), name="accounts.filteredlist"),
     path('accounts/<int:pk>', views.AccountDetailsView.as_view(),name="account.detail"),
-    path('accounts/new',views.AccountCreateView.as_view(), name='account.new'),
+    re_path(r'accounts/((?P<parent_id>[0-9]+)/)?new',views.AccountCreateView.as_view(), name='account.new'),
     path('accounts/<int:pk>/edit', views.AccountUpdateView.as_view(),name="account.update"),
     path('accounts/<int:pk>/delete', views.AccountDeleteView.as_view(),name="account.delete"),
 

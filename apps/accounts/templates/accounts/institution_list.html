@@ -7,8 +7,7 @@
           <div class="card-header border-0">
             <h3 class="mb-0">{{view.title}}</h3>
             <div class="mt--4 text-right">
-              <a href="{% url 'institution.new' %}" class="btn btn-sm btn-primary">New</a>
-              <a href="#" class="btn btn-sm btn-primary">Filters</a>
+              <a href="{% url 'institution.new' %}" class="btn btn-sm btn-secondary">New</a>
             </div>
           </div>
           <!-- Light table -->
@@ -16,48 +15,51 @@
             <table class="table align-items-center table-flush">
               <thead class="thead-light">
                 <tr>
-                  <th scope="col" class="sort" data-sort="institution">Institution</th>
-                  <th scope="col" class="sort" data-sort="description">Description</th>
+                  <th scope="col" class="sort" data-sort="institution">Description</th>
+                  <th scope="col"></th>
+                  <th scope="col" class="sort" data-sort="description">Institution</th>
                   <th scope="col" class="sort" data-sort="type">Number of Accounts</th>
                   <th scope="col" class="sort" data-sort="last_updated">Last Updated</th>
-                  <th scope="col"></th>
                 </tr>
               </thead>
               <tbody class="list">
 
                 {% for institution in institutions %}
-                <tr>
-                  <th scope="row">
-                    <div class="media align-items-center">
-                      <a href="#" class="avatar rounded-circle mr-3">
-                        <img alt="Image placeholder" src={{institution.get_institution_logo}}>
-                      </a>
-                      <div class="media-body">
-                        <span class="name mb-0 text-sm">{{institution.get_name_display}}</span>
-                      </div>
-                    </div>
+                <tr></tr>
+                  <th>
+                    <span class="text-default">{{institution.description|truncatechars:30}}</span>
                   </th>
-                  <td>
-                    <a href="{% url 'institution.detail' pk=institution.id %}" class="nav-link">{{institution.description|truncatechars:30}}</a>
-                  </td>
-                  <td class="text-default">
-                    <a href="{% url 'accounts.filteredlist' parent_id=institution.id %}" class="nav-link">{{institution.accounts.count}}</a>
-                  </td>
-                  <td>
-                    <span class="badge badge-dot mr-1">
-                      <i class="bg-warning"></i>
-                      <span class="text-default">{{institution.last_updated}}</span>
-                    </span>
                   <td class="text-right">
                     <div class="dropdown">
                       <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fas fa-ellipsis-v"></i>
                       </a>
                       <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                        <a class="dropdown-item" href="{% url 'institution.detail' pk=institution.id %}">View</a>
                         <a class="dropdown-item" href="{% url 'institution.update' pk=institution.id %}">Edit</a>
-                        <a class="dropdown-item" href="{% url 'institution.delete' pk=institution.id %}">Delete</a>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#deleteModal{{institution.id}}">Delete</a>
+                      </div>
+                      {% include 'modals/institution_delete.html' %}
+                    </div>
+                  </td>
+                  <td scope="row">
+                    <div class="media align-items-center">
+                      <a href="#" class="avatar avatar-sm rounded-circle mr-2">
+                        <img alt="Image placeholder" src={{institution.get_institution_logo}}>
+                      </a>
+                      <div class="media-body">
+                        <span class="name mb-0 text-sm">{{institution.get_name_display}}</span>
                       </div>
                     </div>
+                  </td>
+                  <td class="text-default">
+                    <span class="text-default">{{institution.accounts.count}}</span>
+                  </td>
+                  <td>
+                    <span class="badge badge-dot mr-1">
+                      <i class="bg-warning"></i>
+                      <span class="text-default">{{institution.last_updated}}</span>
+                    </span>
                   </td>
                 </tr>
                 {% endfor %}

@@ -19,7 +19,7 @@ class AccountForm(forms.ModelForm):
         labels = {
             'parent_institution': 'Associated Institution Profile',
             'number': 'Account Number',
-            'balance': 'Current Balance'
+            'current_value': 'Current Balance'
         }
 
     def clean_number(self):
