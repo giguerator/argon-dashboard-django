@@ -10,6 +10,7 @@ from django.core.paginator import Paginator
 
 from .forms import AccountForm, InstitutionForm
 from .models import Account, Institution
+from apps.core_assets.models import Asset
 
 class AccountDeleteView(DeleteView):
     model = Account
@@ -159,6 +160,22 @@ class InstitutionDetailsView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['accounts']=self.object.accounts.all()
         context['account_count'] = self.object.get_account_count
+
+        span=self.request.GET.get('chart_span')
+        if span is None:
+            span = '1y'
+
+        context['institution_report'], context['institution_report_labels'] = Asset.multi_asset_value_over_time_report(self.object.accounts.all(),span)
+        context['span_activated'] = {
+            'max': 'secondary',
+            '5y': 'secondary',
+            '1y': 'secondary',
+            '6m': 'secondary',
+            '1m': 'secondary',
+            '2w': 'secondary',
+        }
+        context['span_activated'][span]='primary'
+        
         return context
 
 

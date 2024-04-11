@@ -143,18 +143,14 @@ class Asset(models.Model):
         
         interval = now - initial_date
 
-        if interval > 4*datetime.timedelta(days=365):
-            label_dates = Asset.__get_label_dates(initial_date, now, '12m')
-            labels=[str(data.get('value_date__year')) for data in queryset]
-
-        elif interval > datetime.timedelta(days=31):
+        if interval > datetime.timedelta(days=31):
             label_dates = Asset.__get_label_dates(initial_date, now, '1m')
             labels=[MONTHS[data.get('value_date__month')] + "-" + str(data.get('value_date__year')) for data in queryset]
 
         else:
             queryset = filtered_obj.values('value_date__year', 'value_date__month', 'value_date__day').annotate(**annotate_params)
             label_dates = Asset.__get_label_dates(initial_date, now, '1d')
-            labels=[str(data.get('value_date__day')) + "-" + MONTHS[data.get('value_date__month')] + "-" + str(data.get('value_date__year')) for data in label_dates]
+            labels=[str(data.get('value_date__day')) + "-" + MONTHS[data.get('value_date__month')] + "-" + str(data.get('value_date__year')) for data in queryset]
 
         return list(queryset), labels
     
@@ -184,16 +180,16 @@ class Asset(models.Model):
             else:
                 for asset_report_item in asset_report:
                     matching_report = list(filter(
-                        lambda data: Asset.__match_date(data, asset_report_item['value_date__month'],report_item['value_date__year']),
+                        lambda data: Asset.__match_date(data, asset_report_item['value_date__month'],asset_report_item['value_date__year']),
                         report
                     ))
 
                     if 'average_value' not in matching_report[0]:
                         less_than_report = list(filter(
-                        lambda data: Asset.__match_lower_than_date(data, asset_report_item['value_date__month'],report_item['value_date__year']),
+                        lambda data: Asset.__match_lower_than_date(data, asset_report_item['value_date__month'],asset_report_item['value_date__year']),
                         report
                     ))
-                        report.insert(len(less_than_report),asset_report_item,)
+                        report.insert(len(less_than_report),asset_report_item)
 
                 previous_asset = None
                 for report_item in report:

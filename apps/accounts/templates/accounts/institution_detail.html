@@ -53,6 +53,13 @@
                   </div>
                 </div>
                 <div class="card-body">
+                  {% if not institution_report %}
+                    <div class="mb-0">
+                          <div class="alert alert-warning" style="text-align: center;">
+                            <strong>No data to display...</strong>
+                          </div>
+                    </div>
+                    {% endif %}
                   <div class="chart chart-sm">
                     <!-- Chart wrapper -->
                     <canvas id="chart-accounts" class="chart-canvas"></canvas>
@@ -84,7 +91,7 @@
 {% block javascripts %}
 <script type="application/javascript" src="{% static 'accounts_assets/chart_management.js' %}"></script>
 
-<!--<script type="application/javascript">
-  AccountChart({{ account_report|safe }}, {{ account_report_labels|safe }});
-</script>-->
+<script type="application/javascript">
+  AccountChart({{ institution_report|safe }}, {{ institution_report_labels|safe }});
+</script>
 {% endblock javascripts %}
