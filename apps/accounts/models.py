@@ -66,13 +66,24 @@ class Institution(models.Model):
     def get_accounts(self):
         return self.accounts.all()
 
-class Desjardins(Institution):
+class Security(models.Model):
+    username = models.CharField(max_length=30)
+    password = models.CharField(max_length=30)
+    url = models.URLField(max_length=200)
+
+    class Meta:
+        abstract = True
+
+class DesjardinsAuthentification(Security, models.Model):
     security_questions_1=models.TextField()
     security_answer_1=models.CharField(max_length=50)
     security_questions_2=models.TextField()
     security_answer_2=models.CharField(max_length=50)
     security_questions_3=models.TextField()
     security_answer_3=models.CharField(max_length=50)
+    institution = models.ForeignKey(Institution,on_delete=models.CASCADE, related_name='desjardins_security')
+    user = models.ForeignKey(User,on_delete=models.CASCADE, related_name='desjardins_security')
+
 
 class Account(Asset, models.Model):
     number = models.CharField(max_length=64)

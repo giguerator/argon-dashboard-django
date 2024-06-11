@@ -144,12 +144,10 @@ class Asset(models.Model):
         interval = now - initial_date
 
         if interval > datetime.timedelta(days=31):
-            label_dates = Asset.__get_label_dates(initial_date, now, '1m')
             labels=[MONTHS[data.get('value_date__month')] + "-" + str(data.get('value_date__year')) for data in queryset]
 
         else:
             queryset = filtered_obj.values('value_date__year', 'value_date__month', 'value_date__day').annotate(**annotate_params)
-            label_dates = Asset.__get_label_dates(initial_date, now, '1d')
             labels=[str(data.get('value_date__day')) + "-" + MONTHS[data.get('value_date__month')] + "-" + str(data.get('value_date__year')) for data in queryset]
 
         return list(queryset), labels
@@ -170,13 +168,13 @@ class Asset(models.Model):
     def multi_asset_value_over_time_report(assets, period='1y'):
         
         report = None
+        report_labels = None
         asset_report_labels = None
         for asset in assets:
             asset_report, asset_report_labels = asset.value_over_time_report(period=period)
         
             if report is None:
                 report = asset_report
-                report_labels = asset_report_labels
             else:
                 for asset_report_item in asset_report:
                     matching_report = list(filter(
@@ -204,6 +202,13 @@ class Asset(models.Model):
                         if previous_asset is not None:
                             report_item['average_value'] += previous_asset['average_value']
             
+        if report is not None:
+            if 'value_date__day' in asset_report_labels[0]:
+                report_labels=[str(data.get('value_date__day')) + "-" + MONTHS[data.get('value_date__month')] + "-" + str(data.get('value_date__year')) for data in report]
+            
+            else:
+                report_labels=[MONTHS[data.get('value_date__month')] + "-" + str(data.get('value_date__year')) for data in report]
+
         return report, report_labels 
     
     class Meta:

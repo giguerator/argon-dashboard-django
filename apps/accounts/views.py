@@ -199,3 +199,18 @@ class InstitutionUpdateView(LoginRequiredMixin, UpdateView):
         {'name': 'Institution Profiles', 'urlname': 'institutions.list'},
     ]
     
+class InstitutionProfileSecurityCreateView(CreateView):
+    model = Institution
+    form_class = InstitutionForm
+    success_url = '/accounts/institutions'
+    title = "New Institution Profiles"
+    hierarchy = [
+        {'name': 'Institution Profiles', 'urlname': 'institutions.list'},
+        {'name': 'New', 'urlname': 'institution.new'},
+    ]
+    
+    def form_valid(self, form):
+        self.object = form.save(commit = False)
+        self.object.user = self.request.user
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
